@@ -17,6 +17,9 @@
  */
 package de.greenrobot.daogenerator;
 
+import java.util.List;
+import java.util.ArrayList;
+
 /** Model class for an entity's property: a Java property mapped to a data base column. */
 public class Property {
 
@@ -51,6 +54,21 @@ public class Property {
         public PropertyBuilder primaryKeyDesc() {
             property.primaryKey = true;
             property.pkDesc = true;
+            return this;
+        }
+
+        public PropertyBuilder addFieldAnnotation(Annotation annotation) {
+            property.fieldAnnotations.add(annotation);
+            return this;
+        }
+
+        public PropertyBuilder addSetterAnnotation(Annotation annotation) {
+            property.setterAnnotations.add(annotation);
+            return this;
+        }
+
+        public PropertyBuilder addGetterAnnotation(Annotation annotation) {
+            property.getterAnnotations.add(annotation);
             return this;
         }
 
@@ -123,6 +141,10 @@ public class Property {
     private boolean unique;
     private boolean notNull;
 
+    private List<Annotation> fieldAnnotations = new ArrayList<Annotation>();
+    private List<Annotation> setterAnnotations = new ArrayList<Annotation>();
+    private List<Annotation> getterAnnotations = new ArrayList<Annotation>();
+
     /** Initialized in 2nd pass */
     private String constraints;
 
@@ -191,6 +213,18 @@ public class Property {
 
     public Entity getEntity() {
         return entity;
+    }
+
+    public List<Annotation> getFieldAnnotations() {
+        return fieldAnnotations;
+    }
+
+    public List<Annotation> getSetterAnnotations() {
+        return setterAnnotations;
+    }
+
+    public List<Annotation> getGetterAnnotations() {
+        return getterAnnotations;
     }
 
     void init2ndPass() {

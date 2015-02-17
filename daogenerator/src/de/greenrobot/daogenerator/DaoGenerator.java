@@ -45,6 +45,7 @@ public class DaoGenerator {
     private Template templateDao;
     private Template templateDaoMaster;
     private Template templateDaoSession;
+    private Template templateEntityBase;
     private Template templateEntity;
     private Template templateDaoUnitTest;
     private Template templateContentProvider;
@@ -65,6 +66,7 @@ public class DaoGenerator {
         templateDao = config.getTemplate("dao.ftl");
         templateDaoMaster = config.getTemplate("dao-master.ftl");
         templateDaoSession = config.getTemplate("dao-session.ftl");
+        templateEntityBase = config.getTemplate("entity-base.ftl");
         templateEntity = config.getTemplate("entity.ftl");
         templateDaoUnitTest = config.getTemplate("dao-unit-test.ftl");
         templateContentProvider = config.getTemplate("content-provider.ftl");
@@ -77,15 +79,21 @@ public class DaoGenerator {
     }
 
     /** Generates all entities and DAOs for the given schema. */
-    public void generateAll(Schema schema, String outDir) throws Exception {
-        generateAll(schema, outDir, null);
+    public void generateAll(Schema schema, String outDir, String outDirModel) throws Exception {
+        generateAll(schema, outDir, outDirModel, null);
     }
 
     /** Generates all entities and DAOs for the given schema. */
-    public void generateAll(Schema schema, String outDir, String outDirTest) throws Exception {
+    public void generateAll(Schema schema, String outDir) throws Exception {
+        generateAll(schema, outDir, null, null);
+    }
+
+    /** Generates all entities and DAOs for the given schema. */
+    public void generateAll(Schema schema, String outDir, String outDirModel, String outDirTest) throws Exception {
         long start = System.currentTimeMillis();
 
         File outDirFile = toFileForceExists(outDir);
+        File outDirModelFile = outDirModel == null ? outDirFile : toFileForceExists(outDirModel);
 
         File outDirTestFile = null;
         if (outDirTest != null) {
@@ -101,7 +109,9 @@ public class DaoGenerator {
         for (Entity entity : entities) {
             generate(templateDao, outDirFile, entity.getJavaPackageDao(), entity.getClassNameDao(), schema, entity);
             if (!entity.isProtobuf() && !entity.isSkipGeneration()) {
-                generate(templateEntity, outDirFile, entity.getJavaPackage(), entity.getClassName(), schema, entity);
+                //generate(templateEntity, outDirFile, entity.getJavaPackage(), entity.getClassName(), schema, entity);
+                generate(templateEntity, outDirModelFile, entity.getJavaPackage(), entity.getClassName(), schema, entity);
+                generate(templateEntityBase, outDirFile, entity.getJavaPackage(), entity.getClassNameBase(), schema, entity);
             }
             if (outDirTestFile != null && !entity.isSkipGenerationTest()) {
                 String javaPackageTest = entity.getJavaPackageTest();
@@ -146,6 +156,7 @@ public class DaoGenerator {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("schema", schema);
         root.put("entity", entity);
+        root.put("annotation_no_name", Annotation.NO_NAME);
         if (additionalObjectsForTemplate != null) {
             root.putAll(additionalObjectsForTemplate);
         }

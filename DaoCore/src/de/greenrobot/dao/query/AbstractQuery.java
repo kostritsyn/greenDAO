@@ -80,4 +80,11 @@ abstract class AbstractQuery<T> {
         }
     }
 
+    public String getSql() {
+        return sql;
+    }
+
+    public String[] getParameters() {
+        return parameters;
+    }
 }

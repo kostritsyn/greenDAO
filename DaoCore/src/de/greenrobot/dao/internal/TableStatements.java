@@ -34,6 +34,7 @@ public class TableStatements {
     private volatile String selectByKey;
     private volatile String selectByRowId;
     private volatile String selectKeys;
+    private volatile String selectPk;
 
     public TableStatements(SQLiteDatabase db, String tablename, String[] allColumns, String[] pkColumns) {
         this.db = db;
@@ -108,4 +109,11 @@ public class TableStatements {
         return selectByRowId;
     }
 
+    /** creates a select which only selects PK. */
+    public String getSelectPk() {
+        if (selectPk == null) {
+            selectPk = SqlUtils.createSqlSelect(tablename, "T", pkColumns);
+        }
+        return selectPk;
+    }
 }

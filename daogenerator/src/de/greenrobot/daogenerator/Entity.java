@@ -36,6 +36,7 @@ import java.util.*;
 public class Entity {
     private final Schema schema;
     private final String className;
+    private final String classNameBase;
     private final List<Property> properties;
     private List<Property> propertiesColumns;
     private final List<Property> propertiesPk;
@@ -48,6 +49,9 @@ public class Entity {
     private final Collection<String> additionalImportsEntity;
     private final Collection<String> additionalImportsDao;
     private final List<String> interfacesToImplement;
+    private final List<Annotation> annotations;
+    private final List<Annotation> emptyConstructorAnnotations;
+    private final List<Annotation> fullConstructorAnnotations;
     private final List<ContentProvider> contentProviders;
 
     private String tableName;
@@ -71,6 +75,7 @@ public class Entity {
     Entity(Schema schema, String className) {
         this.schema = schema;
         this.className = className;
+        this.classNameBase = className + "Base";
         properties = new ArrayList<Property>();
         propertiesPk = new ArrayList<Property>();
         propertiesNonPk = new ArrayList<Property>();
@@ -82,6 +87,9 @@ public class Entity {
         additionalImportsEntity = new TreeSet<String>();
         additionalImportsDao = new TreeSet<String>();
         interfacesToImplement = new ArrayList<String>();
+        annotations = new ArrayList<Annotation>();
+        emptyConstructorAnnotations = new ArrayList<Annotation>();
+        fullConstructorAnnotations = new ArrayList<Annotation>();
         contentProviders = new ArrayList<ContentProvider>();
         constructors = true;
     }
@@ -227,6 +235,21 @@ public class Entity {
         incomingToManyRelations.add(toMany);
     }
 
+    public Entity addAnnotation(Annotation annotation) {
+        this.annotations.add(annotation);
+        return this;
+    }
+
+    public Entity addEmptyConstructorAnnotation(Annotation annotation) {
+        this.emptyConstructorAnnotations.add(annotation);
+        return this;
+    }
+
+    public Entity addFullConstructorAnnotation(Annotation annotation) {
+        this.fullConstructorAnnotations.add(annotation);
+        return this;
+    }
+
     public ContentProvider addContentProvider() {
         List<Entity> entities = new ArrayList<Entity>();
         ContentProvider contentProvider = new ContentProvider(schema, entities);
@@ -264,6 +287,10 @@ public class Entity {
 
     public String getClassName() {
         return className;
+    }
+
+    public String getClassNameBase() {
+        return classNameBase;
     }
 
     public List<Property> getProperties() {
@@ -413,6 +440,18 @@ public class Entity {
 
     public List<String> getInterfacesToImplement() {
         return interfacesToImplement;
+    }
+
+    public List<Annotation> getAnnotations() {
+        return annotations;
+    }
+
+    public List<Annotation> getEmptyConstructorAnnotations() {
+        return emptyConstructorAnnotations;
+    }
+
+    public List<Annotation> getFullConstructorAnnotations() {
+        return fullConstructorAnnotations;
     }
 
     public List<ContentProvider> getContentProviders() {

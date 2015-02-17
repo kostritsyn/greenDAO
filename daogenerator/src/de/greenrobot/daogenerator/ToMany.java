@@ -17,6 +17,7 @@
  */
 package de.greenrobot.daogenerator;
 
+import java.lang.System;
 import java.util.List;
 
 /** To-many relationship from a source entity to many target entitites. */
