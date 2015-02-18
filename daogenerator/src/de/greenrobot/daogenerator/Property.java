@@ -219,6 +219,10 @@ public class Property {
         return fieldAnnotations;
     }
 
+    public void addFieldAnnotation(Annotation annotation) {
+        fieldAnnotations.add(annotation);
+    }
+
     public List<Annotation> getSetterAnnotations() {
         return setterAnnotations;
     }

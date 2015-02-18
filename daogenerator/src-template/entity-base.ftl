@@ -80,6 +80,7 @@ as ifc>${ifc}<#if ifc_has_next>, </#if></#list></#if> {
 
 </#list>
 <#list entity.toManyRelations as toMany>
+    <@print_annotations toMany.fieldAnnotations, "    "/>
     protected List<${toMany.targetEntity.className}> ${toMany.name};
 </#list>
 

@@ -19,6 +19,7 @@ package de.greenrobot.daogenerator;
 
 import java.lang.System;
 import java.util.List;
+import java.util.ArrayList;
 
 /** To-many relationship from a source entity to many target entitites. */
 public class ToMany {
@@ -30,6 +31,8 @@ public class ToMany {
     private Property[] sourceProperties;
     private final Property[] targetProperties;
     private final PropertyOrderList propertyOrderList;
+
+    private List<Annotation> fieldAnnotations = new ArrayList<Annotation>();
 
     public ToMany(Schema schema, Entity sourceEntity, Property[] sourceProperties, Entity targetEntity,
             Property[] targetProperties) {
@@ -71,6 +74,14 @@ public class ToMany {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Annotation> getFieldAnnotations() {
+        return fieldAnnotations;
+    }
+
+    public void addFieldAnnotation(Annotation annotation) {
+        fieldAnnotations.add(annotation);
     }
 
     /** Property of target entity used for ascending order. */
