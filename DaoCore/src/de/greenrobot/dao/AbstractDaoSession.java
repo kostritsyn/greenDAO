@@ -58,6 +58,11 @@ public class AbstractDaoSession {
 
     /** Convenient call for {@link AbstractDao#insert(Object)}. */
     public <T> long insert(T entity) {
+
+        if (entity == null) {
+            return 0;
+        }
+
         @SuppressWarnings("unchecked")
         AbstractDao<T, ?> dao = (AbstractDao<T, ?>) getDao(entity.getClass());
         return dao.insert(entity);
@@ -65,6 +70,11 @@ public class AbstractDaoSession {
 
     /** Convenient call for {@link AbstractDao#insertOrReplace(Object)}. */
     public <T> long insertOrReplace(T entity) {
+
+        if (entity == null) {
+            return 0;
+        }
+
         @SuppressWarnings("unchecked")
         AbstractDao<T, ?> dao = (AbstractDao<T, ?>) getDao(entity.getClass());
         return dao.insertOrReplace(entity);

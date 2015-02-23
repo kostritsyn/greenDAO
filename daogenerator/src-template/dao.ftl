@@ -299,4 +299,7 @@ as property>${property.columnName}<#if property_has_next>,</#if></#list>);");
 <#if entity.toOneRelations?has_content>
     <#include "dao-deep.ftl">
 </#if>
+<#if entity.toOneRelations?has_content || entity.toManyRelations?has_content>
+    <#include "dao-uid.ftl">
+</#if>
 }

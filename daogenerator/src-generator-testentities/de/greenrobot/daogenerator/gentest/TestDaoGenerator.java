@@ -253,7 +253,7 @@ public class TestDaoGenerator {
         entity.addStringProperty("key").primaryKey();
         entity.addStringProperty("value");
     }
-
+s
     protected void createAutoincrement() {
         Entity entity = schema.addEntity("AutoincrementEntity");
         entity.addIdProperty().autoincrement();
