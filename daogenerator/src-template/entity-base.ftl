@@ -55,8 +55,11 @@ ${keepIncludes!}
  */
 <@print_annotations entity.annotations, ""/>
 abstract public class ${entity.classNameBase}<#if
-entity.superclass?has_content> extends ${entity.superclass} </#if><#if
-entity.interfacesToImplement?has_content> implements <#list entity.interfacesToImplement
+entity.superclassEntity?has_content> extends ${entity.superclassEntity.className}<#elseif
+entity.superclass?has_content> extends ${entity.superclass}</#if><#if
+entity.interfacesToImplement?has_content>
+
+implements <#list entity.interfacesToImplement
 as ifc>${ifc}<#if ifc_has_next>, </#if></#list></#if> {
 
 <#list entity.properties as property>
@@ -99,7 +102,8 @@ ${keepFields!}
 </#if>
 <#if entity.constructors>
     <@print_annotations entity.emptyConstructorAnnotations, "    "/>
-    public ${entity.classNameBase}() {
+    public ${entity.classNameBase}() {<#if entity.superclassEntity?has_content>
+        super();</#if>
     }
 <#if entity.propertiesPk?has_content && entity.propertiesPk?size != entity.properties?size>
 
@@ -110,10 +114,25 @@ property>${property.javaType} ${property.propertyName}<#if property_has_next>, <
 </#list>
     }
 </#if>
+<#if entity.superclassEntity?has_content>
+
+    public ${entity.classNameBase}(<#list entity.superclassEntity.properties as
+property>${property.javaType} ${property.propertyName}<#if property_has_next>, </#if></#list>) {
+        super(<#list entity.superclassEntity.properties as
+property>${property.propertyName}<#if property_has_next>, </#if></#list>);
+    }
+</#if>
 
     <@print_annotations entity.fullConstructorAnnotations, "    "/>
-    public ${entity.classNameBase}(<#list entity.properties as
+    public ${entity.classNameBase}(<#if entity.superclassEntity?has_content><#list
+entity.superclassEntity.properties as property>${property.javaType} ${property.propertyName}<#if
+property_has_next || entity.properties?has_content>, </#if></#list></#if><#list entity.properties as
 property>${property.javaType} ${property.propertyName}<#if property_has_next>, </#if></#list>) {
+<#if entity.superclassEntity?has_content>
+        super(<#list entity.superclassEntity.properties as
+property>${property.propertyName}<#if property_has_next>, </#if></#list>);
+</#if>
+
 <#list entity.properties as property>
         this.${property.propertyName} = ${property.propertyName};
 </#list>

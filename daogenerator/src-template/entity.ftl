@@ -52,22 +52,39 @@ ${keepFields!}
 
 </#if>
 <#if entity.constructors>
-    public ${entity.className}() {
+    <@print_annotations entity.emptyConstructorAnnotations, "    "/>
+    public ${entity.className}() {<#if entity.superclassEntity?has_content>
+        super();</#if>
     }
 <#if entity.propertiesPk?has_content && entity.propertiesPk?size != entity.properties?size>
 
     public ${entity.className}(<#list entity.propertiesPk as
 property>${property.javaType} ${property.propertyName}<#if property_has_next>, </#if></#list>) {
 <#list entity.propertiesPk as property>
-        super(${property.propertyName});
+        this.${property.propertyName} = ${property.propertyName};
 </#list>
     }
 </#if>
+<#if entity.superclassEntity?has_content>
 
-    public ${entity.className}(<#list entity.properties as
+    public ${entity.className}(<#list entity.superclassEntity.properties as
 property>${property.javaType} ${property.propertyName}<#if property_has_next>, </#if></#list>) {
-        super(<#list entity.properties as
-        property>${property.propertyName}<#if property_has_next>, </#if></#list>);
+        super(<#list entity.superclassEntity.properties as
+property>${property.propertyName}<#if property_has_next>, </#if></#list>);
+    }
+</#if>
+
+    <@print_annotations entity.fullConstructorAnnotations, "    "/>
+    public ${entity.className}(<#if entity.superclassEntity?has_content><#list
+entity.superclassEntity.properties as property>${property.javaType} ${property.propertyName}<#if
+property_has_next || entity.properties?has_content>, </#if></#list></#if><#list entity.properties as
+property>${property.javaType} ${property.propertyName}<#if property_has_next>, </#if></#list>) {
+<#if entity.superclassEntity?has_content>
+        super(<#if entity.superclassEntity?has_content><#list
+entity.superclassEntity.properties as property>${property.propertyName}<#if
+property_has_next || entity.properties?has_content>, </#if></#list></#if><#list entity.properties as
+property>${property.propertyName}<#if property_has_next>, </#if></#list>);
+</#if>
     }
 </#if>
 <#if entity.hasKeepSections>

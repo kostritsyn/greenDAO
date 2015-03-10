@@ -17,9 +17,14 @@
  */
 package de.greenrobot.daogenerator;
 
-import de.greenrobot.daogenerator.Property.PropertyBuilder;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
-import java.util.*;
+import de.greenrobot.daogenerator.Property.PropertyBuilder;
 
 /**
  * Model class for an entity: a Java data object mapped to a data base table. A new entity is added to a {@link Schema}
@@ -71,6 +76,9 @@ public class Entity {
     private boolean skipTableCreation;
     private Boolean active;
     private Boolean hasKeepSections;
+
+    private boolean skipDaoGeneration;
+    private Entity superclassEntity;
 
     Entity(Schema schema, String className) {
         this.schema = schema;
@@ -476,6 +484,22 @@ public class Entity {
         this.superclass = classToExtend;
     }
 
+    public boolean isSkipDaoGeneration() {
+        return skipDaoGeneration;
+    }
+
+    public void setSkipDaoGeneration(boolean skipDaoGeneration) {
+        this.skipDaoGeneration = skipDaoGeneration;
+    }
+
+    public Entity getSuperclassEntity() {
+        return superclassEntity;
+    }
+
+    public void setSuperclassEntity(Entity superclassEntity) {
+        this.superclassEntity = superclassEntity;
+    }
+
     void init2ndPass() {
         init2nPassNamesWithDefaults();
 
@@ -498,6 +522,9 @@ public class Entity {
         }
 
         propertiesColumns = new ArrayList<Property>(properties);
+        if (superclassEntity != null) {
+            propertiesColumns.addAll(0, superclassEntity.getProperties());
+        }
         for (ToOne toOne : toOneRelations) {
             toOne.init2ndPass();
             Property[] fkProperties = toOne.getFkProperties();

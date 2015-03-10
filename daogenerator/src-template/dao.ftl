@@ -123,7 +123,7 @@ as property>${property.columnName}<#if property_has_next>,</#if></#list>);");
     @Override
     protected void bindValues(SQLiteStatement stmt, ${entity.className} entity) {
         stmt.clearBindings();
-<#list entity.properties as property>
+<#list entity.propertiesColumns as property>
 <#if property.notNull || entity.protobuf>
 <#if entity.protobuf>
         if(entity.has${property.propertyName?cap_first}()) {
@@ -185,7 +185,7 @@ as property>${property.columnName}<#if property_has_next>,</#if></#list>);");
     public ${entity.className} readEntity(Cursor cursor, int offset) {
 <#if entity.protobuf>
         Builder builder = ${entity.className}.newBuilder();
-<#list entity.properties as property>
+<#list entity.propertiesColumns as property>
 <#if !property.notNull>
         if (!cursor.isNull(offset + ${property_index})) {
     </#if>        builder.set${property.propertyName?cap_first}(cursor.get${toCursorType[property.propertyType]}(offset + ${property_index}));
@@ -199,7 +199,7 @@ as property>${property.columnName}<#if property_has_next>,</#if></#list>);");
 ############################## readEntity non-protobuff, constructor ############################## 
 -->
         ${entity.className} entity = new ${entity.className}( //
-<#list entity.properties as property>
+<#list entity.propertiesColumns as property>
             <#if !property.notNull>cursor.isNull(offset + ${property_index}) ? null : </#if><#if
             property.propertyType == "Byte">(byte) </#if><#if
             property.propertyType == "Date">new java.util.Date(</#if>cursor.get${toCursorType[property.propertyType]}(offset + ${property_index})<#if
@@ -224,7 +224,7 @@ as property>${property.columnName}<#if property_has_next>,</#if></#list>);");
 <#if entity.protobuf>
         throw new UnsupportedOperationException("Protobuf objects cannot be modified");
 <#else> 
-<#list entity.properties as property>
+<#list entity.propertiesColumns as property>
         entity.set${property.propertyName?cap_first}(<#if !property.notNull>cursor.isNull(offset + ${property_index}) ? null : </#if><#if
             property.propertyType == "Byte">(byte) </#if><#if
             property.propertyType == "Date">new java.util.Date(</#if>cursor.get${toCursorType[property.propertyType]}(offset + ${property_index})<#if

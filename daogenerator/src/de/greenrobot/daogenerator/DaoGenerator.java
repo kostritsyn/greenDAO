@@ -107,7 +107,9 @@ public class DaoGenerator {
 
         List<Entity> entities = schema.getEntities();
         for (Entity entity : entities) {
-            generate(templateDao, outDirFile, entity.getJavaPackageDao(), entity.getClassNameDao(), schema, entity);
+            if (!entity.isSkipDaoGeneration()) {
+                generate(templateDao, outDirFile, entity.getJavaPackageDao(), entity.getClassNameDao(), schema, entity);
+            }
             if (!entity.isProtobuf() && !entity.isSkipGeneration()) {
                 //generate(templateEntity, outDirFile, entity.getJavaPackage(), entity.getClassName(), schema, entity);
                 generate(templateEntity, outDirModelFile, entity.getJavaPackage(), entity.getClassName(), schema, entity);
