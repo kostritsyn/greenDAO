@@ -9,7 +9,7 @@
 
         </#list>
         </#if>
-        long entityId = insert(entity);
+        long entityId = super.insert(entity);
 
         <#if entity.toManyRelations?has_content>
         <#list entity.toManyRelations as toMany>

@@ -142,6 +142,15 @@ public class Entity {
         return addProperty(PropertyType.Date, propertyName);
     }
 
+    public PropertyBuilder addEnumProperty(String enumType, String propertyName) {
+        if (!propertyNames.add(propertyName)) {
+            throw new RuntimeException("Property already defined: " + propertyName);
+        }
+        PropertyBuilder builder = new Property.PropertyBuilder(schema, this, PropertyType.Enum, propertyName, enumType);
+        properties.add(builder.getProperty());
+        return builder;
+    }
+
     public PropertyBuilder addProperty(PropertyType propertyType, String propertyName) {
         if (!propertyNames.add(propertyName)) {
             throw new RuntimeException("Property already defined: " + propertyName);
@@ -511,6 +520,20 @@ public class Entity {
                 propertiesPk.add(property);
             } else {
                 propertiesNonPk.add(property);
+            }
+        }
+
+        if (superclassEntity != null) {
+            List<Property> superclassProperties = superclassEntity.getProperties();
+            for (int i = 0; i < superclassProperties.size(); i++) {
+                Property property = superclassProperties.get(i);
+                property.setOrdinal(i);
+                property.init2ndPass();
+                if (property.isPrimaryKey()) {
+                    propertiesPk.add(property);
+                } else {
+                    propertiesNonPk.add(property);
+                }
             }
         }
 

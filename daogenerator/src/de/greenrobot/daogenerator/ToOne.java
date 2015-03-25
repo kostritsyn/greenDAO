@@ -17,6 +17,9 @@
  */
 package de.greenrobot.daogenerator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** To-one relationship from a source entity to one (or zero) target entity. */
 public class ToOne {
     private final Schema schema;
@@ -27,6 +30,8 @@ public class ToOne {
     private final boolean[] resolvedKeyUseEquals;
     private String name;
     private final boolean useFkProperty;
+
+    private List<Annotation> fieldAnnotations = new ArrayList<Annotation>();
 
     public ToOne(Schema schema, Entity sourceEntity, Entity targetEntity, Property[] fkProperties, boolean useFkProperty) {
         this.schema = schema;
@@ -72,6 +77,15 @@ public class ToOne {
 
     public boolean isUseFkProperty() {
         return useFkProperty;
+    }
+
+    public List<Annotation> getFieldAnnotations() {
+        return fieldAnnotations;
+    }
+
+    public ToOne addFieldAnnotation(Annotation annotation) {
+        fieldAnnotations.add(annotation);
+        return this;
     }
 
     void init2ndPass() {

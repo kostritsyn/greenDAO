@@ -79,12 +79,10 @@ property>${property.propertyName}<#if property_has_next>, </#if></#list>);
 entity.superclassEntity.properties as property>${property.javaType} ${property.propertyName}<#if
 property_has_next || entity.properties?has_content>, </#if></#list></#if><#list entity.properties as
 property>${property.javaType} ${property.propertyName}<#if property_has_next>, </#if></#list>) {
-<#if entity.superclassEntity?has_content>
         super(<#if entity.superclassEntity?has_content><#list
 entity.superclassEntity.properties as property>${property.propertyName}<#if
 property_has_next || entity.properties?has_content>, </#if></#list></#if><#list entity.properties as
 property>${property.propertyName}<#if property_has_next>, </#if></#list>);
-</#if>
     }
 </#if>
 <#if entity.hasKeepSections>

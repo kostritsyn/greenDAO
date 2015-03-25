@@ -30,6 +30,12 @@ public class Property {
             property = new Property(schema, entity, propertyType, propertyName);
         }
 
+        public PropertyBuilder(Schema schema, Entity entity, PropertyType propertyType, String propertyName, String javaType) {
+            this(schema, entity, propertyType, propertyName);
+
+            property.setJavaType(javaType);
+        }
+
         public PropertyBuilder columnName(String columnName) {
             property.columnName = columnName;
             return this;
@@ -203,6 +209,10 @@ public class Property {
         return javaType;
     }
 
+    public void setJavaType(String javaType) {
+        this.javaType = javaType;
+    }
+
     public int getOrdinal() {
         return ordinal;
     }
@@ -235,6 +245,11 @@ public class Property {
         if (columnName == null) {
             columnName = DaoUtil.dbName(propertyName);
         }
+
+        if (propertyType.equals(PropertyType.Enum)) {
+            return;
+        }
+
         if (notNull) {
             javaType = schema.mapToJavaTypeNotNull(propertyType);
         } else {

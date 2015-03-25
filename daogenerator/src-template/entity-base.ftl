@@ -56,11 +56,7 @@ ${keepIncludes!}
 <@print_annotations entity.annotations, ""/>
 abstract public class ${entity.classNameBase}<#if
 entity.superclassEntity?has_content> extends ${entity.superclassEntity.className}<#elseif
-entity.superclass?has_content> extends ${entity.superclass}</#if><#if
-entity.interfacesToImplement?has_content>
-
-implements <#list entity.interfacesToImplement
-as ifc>${ifc}<#if ifc_has_next>, </#if></#list></#if> {
+entity.superclass?has_content> extends ${entity.superclass}</#if> {
 
 <#list entity.properties as property>
 <#if property.notNull && complexTypes?seq_contains(property.propertyType)>
@@ -78,6 +74,7 @@ as ifc>${ifc}<#if ifc_has_next>, </#if></#list></#if> {
     protected transient ${entity.classNameDao} myDao;
 
 <#list entity.toOneRelations as toOne>
+    <@print_annotations toOne.fieldAnnotations, "    "/>
     protected ${toOne.targetEntity.className} ${toOne.name};
 <#if toOne.useFkProperty>
     protected ${toOne.resolvedKeyJavaType[0]} ${toOne.name}__resolvedKey;

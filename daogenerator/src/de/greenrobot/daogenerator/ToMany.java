@@ -80,8 +80,9 @@ public class ToMany {
         return fieldAnnotations;
     }
 
-    public void addFieldAnnotation(Annotation annotation) {
+    public ToMany addFieldAnnotation(Annotation annotation) {
         fieldAnnotations.add(annotation);
+        return this;
     }
 
     /** Property of target entity used for ascending order. */
