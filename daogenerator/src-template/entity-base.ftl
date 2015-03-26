@@ -57,23 +57,27 @@ ${keepIncludes!}
 abstract public class ${entity.classNameBase}<#if
 entity.superclassEntity?has_content> extends ${entity.superclassEntity.className}<#elseif
 entity.superclass?has_content> extends ${entity.superclass}</#if> {
-
 <#list entity.properties as property>
+
 <#if property.notNull && complexTypes?seq_contains(property.propertyType)>
     /** Not-null value. */
 </#if>
     <@print_annotations property.fieldAnnotations, "    "/>
     protected ${property.javaType} ${property.propertyName};
 </#list>
-
 <#if entity.active>
+<#if !entity.superclassEntity?has_content>
+
     /** Used to resolve relations */
     protected transient DaoSession daoSession;
+</#if>
+<#if !entity.skipDaoGeneration>
 
     /** Used for active entity operations. */
     protected transient ${entity.classNameDao} myDao;
-
+</#if>
 <#list entity.toOneRelations as toOne>
+
     <@print_annotations toOne.fieldAnnotations, "    "/>
     protected ${toOne.targetEntity.className} ${toOne.name};
 <#if toOne.useFkProperty>
@@ -81,9 +85,9 @@ entity.superclass?has_content> extends ${entity.superclass}</#if> {
 <#else>
     protected boolean ${toOne.name}__refreshed;
 </#if>
-
 </#list>
 <#list entity.toManyRelations as toMany>
+
     <@print_annotations toMany.fieldAnnotations, "    "/>
     protected List<${toMany.targetEntity.className}> ${toMany.name};
 </#list>
@@ -139,8 +143,15 @@ property>${property.propertyName}<#if property_has_next>, </#if></#list>);
 <#if entity.active>
     /** called by internal mechanisms, do not call yourself. */
     public void __setDaoSession(DaoSession daoSession) {
+        <#if entity.superclassEntity?has_content>
+        super.__setDaoSession(daoSession);
+        <#else>
         this.daoSession = daoSession;
+        </#if>
+        <#if !entity.skipDaoGeneration>
+
         myDao = daoSession != null ? daoSession.get${entity.classNameDao?cap_first}() : null;
+        </#if>
     }
 
 </#if>
@@ -263,7 +274,7 @@ property>${property.propertyName}<#if property_has_next>, </#if></#list>);
 ########## Active entity operations ######
 ##########################################
 -->
-<#if entity.active>
+<#if entity.active && !entity.skipDaoGeneration>
     /** Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context. */
     public void delete() {
         if (myDao == null) {
