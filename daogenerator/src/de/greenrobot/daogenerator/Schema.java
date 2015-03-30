@@ -67,6 +67,7 @@ public class Schema {
         propertyToDbType.put(PropertyType.ByteArray, "BLOB");
         propertyToDbType.put(PropertyType.Date, "INTEGER");
         propertyToDbType.put(PropertyType.Enum, "TEXT");
+        propertyToDbType.put(PropertyType.Serializable, "BLOB");
 
         propertyToJavaTypeNotNull = new HashMap<PropertyType, String>();
         propertyToJavaTypeNotNull.put(PropertyType.Boolean, "boolean");

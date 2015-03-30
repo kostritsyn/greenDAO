@@ -157,6 +157,7 @@ public class Property {
     private int ordinal;
 
     private String javaType;
+    private String javaTypeShort;
 
     public Property(Schema schema, Entity entity, PropertyType propertyType, String propertyName) {
         this.schema = schema;
@@ -209,8 +210,16 @@ public class Property {
         return javaType;
     }
 
+    public String getJavaTypeShort() {
+        return javaTypeShort;
+    }
+
     public void setJavaType(String javaType) {
         this.javaType = javaType;
+
+        /* Avoid generic types */
+        int index = javaType.indexOf('<');
+        javaTypeShort = index < 0 ? javaType : javaType.substring(0, index);
     }
 
     public int getOrdinal() {
@@ -246,7 +255,7 @@ public class Property {
             columnName = DaoUtil.dbName(propertyName);
         }
 
-        if (propertyType.equals(PropertyType.Enum)) {
+        if (propertyType.equals(PropertyType.Enum) || propertyType.equals(PropertyType.Serializable)) {
             return;
         }
 
@@ -255,6 +264,8 @@ public class Property {
         } else {
             javaType = schema.mapToJavaTypeNullable(propertyType);
         }
+
+        javaTypeShort = javaType;
     }
 
     private void initConstraint() {

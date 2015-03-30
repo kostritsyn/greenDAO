@@ -30,7 +30,7 @@ import de.greenrobot.dao.DaoException;
  * @param <T>
  *            The enitity class the query will return results for.
  */
-// TODO support long, double and other types, not just Strings, for parameters
+// TODO de.greenrobot.dao.support long, double and other types, not just Strings, for parameters
 // TODO Make parameters setable by Property (if unique in paramaters)
 // TODO Query for PKs/ROW IDs
 // TODO Make query compilable

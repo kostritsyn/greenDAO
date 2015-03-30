@@ -115,7 +115,7 @@ public class SqlUtils {
         return builder.toString();
     }
 
-    /** Remember: SQLite does not support joins nor table alias for DELETE. */
+    /** Remember: SQLite does not de.greenrobot.dao.support joins nor table alias for DELETE. */
     public static String createSqlDelete(String tablename, String[] columns) {
         StringBuilder builder = new StringBuilder("DELETE FROM ");
         builder.append(tablename);

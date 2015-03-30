@@ -151,6 +151,18 @@ public class Entity {
         return builder;
     }
 
+    public PropertyBuilder addSerializableProperty(String type, String propertyName) {
+        if (!propertyNames.add(propertyName)) {
+            throw new RuntimeException("Property already defined: " + propertyName);
+        }
+        PropertyBuilder builder = new Property.PropertyBuilder(schema, this, PropertyType.Serializable, propertyName, type);
+        properties.add(builder.getProperty());
+
+        additionalImportsDao.add("de.greenrobot.dao.support.SerializeField");
+
+        return builder;
+    }
+
     public PropertyBuilder addProperty(PropertyType propertyType, String propertyName) {
         if (!propertyNames.add(propertyName)) {
             throw new RuntimeException("Property already defined: " + propertyName);
@@ -195,7 +207,7 @@ public class Entity {
 
     public ToMany addToMany(Property[] sourceProperties, Entity target, Property[] targetProperties) {
         if (protobuf) {
-            throw new IllegalStateException("Protobuf entities do not support realtions, currently");
+            throw new IllegalStateException("Protobuf entities do not de.greenrobot.dao.support realtions, currently");
         }
 
         ToMany toMany = new ToMany(schema, this, sourceProperties, target, targetProperties);
@@ -210,7 +222,7 @@ public class Entity {
      */
     public ToOne addToOne(Entity target, Property fkProperty) {
         if (protobuf) {
-            throw new IllegalStateException("Protobuf entities do not support realtions, currently");
+            throw new IllegalStateException("Protobuf entities do not de.greenrobot.dao.support realtions, currently");
         }
 
         Property[] fkProperties = {fkProperty};

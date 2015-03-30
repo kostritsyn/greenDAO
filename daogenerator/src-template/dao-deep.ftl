@@ -17,7 +17,8 @@ You should have received a copy of the GNU General Public License
 along with greenDAO Generator.  If not, see <http://www.gnu.org/licenses/>.
 
 -->
-<#if entity.toOneRelations?has_content>
+<#if entity.toOneRelations?has_content || (entity.superclassEntity?has_content
+    && entity.superclassEntity.toOneRelations?has_content)>
     private String selectDeep;
 
     protected String getSelectDeep() {
@@ -31,11 +32,25 @@ along with greenDAO Generator.  If not, see <http://www.gnu.org/licenses/>.
             builder.append(',');
 </#if>
 </#list>
+<#if entity.superclassEntity?has_content && entity.superclassEntity.toOneRelations?has_content>
+<#list entity.superclassEntity.toOneRelations as toOne>
+            SqlUtils.appendColumns(builder, "T${toOne_index}", daoSession.get${toOne.targetEntity.classNameDao}().getAllColumns());
+<#if toOne_has_next>
+            builder.append(',');
+</#if>
+</#list>
+</#if>
             builder.append(" FROM ${entity.tableName} T");
 <#list entity.toOneRelations as toOne>
             builder.append(" LEFT JOIN ${toOne.targetEntity.tableName} T${toOne_index}<#--
 --> ON T.'${toOne.fkProperties[0].columnName}'=T${toOne_index}.'${toOne.targetEntity.pkProperty.columnName}'");
 </#list>
+<#if entity.superclassEntity?has_content && entity.superclassEntity.toOneRelations?has_content>
+<#list entity.superclassEntity.toOneRelations as toOne>
+            builder.append(" LEFT JOIN ${toOne.targetEntity.tableName} T${toOne_index}<#--
+--> ON T.'${toOne.fkProperties[0].columnName}'=T${toOne_index}.'${toOne.targetEntity.pkProperty.columnName}'");
+</#list>
+</#if>
             builder.append(' ');
             selectDeep = builder.toString();
         }
@@ -58,10 +73,24 @@ along with greenDAO Generator.  If not, see <http://www.gnu.org/licenses/>.
 </#if>
 
 </#list>
+<#if entity.superclassEntity?has_content && entity.superclassEntity.toOneRelations?has_content>
+<#list entity.superclassEntity.toOneRelations as toOne>
+        ${toOne.targetEntity.className} ${toOne.name} = loadCurrentOther(daoSession.get${toOne.targetEntity.classNameDao}(), cursor, offset);
+<#if toOne.fkProperties[0].notNull>         if(${toOne.name} != null) {
+    </#if>        entity.set${toOne.name?cap_first}(${toOne.name});
+<#if toOne.fkProperties[0].notNull>
+        }
+</#if>
+<#if toOne_has_next>
+        offset += daoSession.get${toOne.targetEntity.classNameDao}().getAllColumns().length;
+</#if>
+
+</#list>
+</#if>
         return entity;    
     }
 
-    public ${entity.className} loadDeep(Long key) {
+    public ${entity.className} loadDeep(${entity.pkType} key) {
         assertSinglePk();
         if (key == null) {
             return null;
