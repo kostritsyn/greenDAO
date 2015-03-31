@@ -20,7 +20,6 @@ package de.greenrobot.daogenerator;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
@@ -112,8 +111,8 @@ public class DaoGenerator {
                 generate(templateDao, outDirFile, entity.getJavaPackageDao(), entity.getClassNameDao(), schema, entity);
             }
             if (!entity.isProtobuf() && !entity.isSkipGeneration()) {
-                generate(templateEntity, outDirFile, entity.getJavaPackage(), entity.getClassName(), schema, entity);
-                //generate(templateEntity, outDirModelFile, entity.getJavaPackage(), entity.getClassName(), schema, entity);
+                //generate(templateEntity, outDirFile, entity.getJavaPackage(), entity.getClassName(), schema, entity);
+                generate(templateEntity, outDirModelFile, entity.getJavaPackage(), entity.getClassName(), schema, entity);
                 generate(templateEntityBase, outDirFile, entity.getJavaPackage(), entity.getClassNameBase(), schema, entity);
             }
             if (outDirTestFile != null && !entity.isSkipGenerationTest()) {
@@ -172,11 +171,8 @@ public class DaoGenerator {
             }
 
             Writer writer = new FileWriter(file);
-            StringWriter w = new StringWriter();
             try {
                 template.process(root, writer);
-                template.process(root, w);
-                String s = w.toString();
                 writer.flush();
                 System.out.println("Written " + file.getCanonicalPath());
             } finally {

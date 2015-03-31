@@ -80,6 +80,9 @@ public class Entity {
     private boolean skipDaoGeneration;
     private Entity superclassEntity;
 
+    /** Imports for non-base class */
+    private final Collection<String> additionalImports;
+
     Entity(Schema schema, String className) {
         this.schema = schema;
         this.className = className;
@@ -100,6 +103,8 @@ public class Entity {
         fullConstructorAnnotations = new ArrayList<Annotation>();
         contentProviders = new ArrayList<ContentProvider>();
         constructors = true;
+
+        additionalImports = new TreeSet<String>();
     }
 
     public PropertyBuilder addBooleanProperty(String propertyName) {
@@ -455,12 +460,25 @@ public class Entity {
         return hasKeepSections;
     }
 
+    public void addImport(String importPackage) {
+        additionalImportsEntity.add(importPackage);
+    }
+
+    public void addEntityImport(String importPackage) {
+        addImport(importPackage);
+        additionalImports.add(importPackage);
+    }
+
     public Collection<String> getAdditionalImportsEntity() {
         return additionalImportsEntity;
     }
 
     public Collection<String> getAdditionalImportsDao() {
         return additionalImportsDao;
+    }
+
+    public Collection<String> getAdditionalImports() {
+        return additionalImports;
     }
 
     public void setHasKeepSections(Boolean hasKeepSections) {

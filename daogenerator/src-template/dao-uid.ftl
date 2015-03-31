@@ -4,15 +4,20 @@
     || entity.superclassEntity.toManyRelations?has_content))>
     @Override
     public long insert(${entity.className} entity) {
-
         <#if entity.superclassEntity?has_content && entity.superclassEntity.toOneRelations?has_content>
         <#list entity.superclassEntity.toOneRelations as toOne>
-        daoSession.insert(entity.get${toOne.name?cap_first}());
+
+        ${toOne.targetEntity.className} ${toOne.name} = entity.get${toOne.name?cap_first}();
+        daoSession.insert(${toOne.name});
+        entity.set${toOne.fkProperties[0].propertyName?cap_first}(${toOne.name}.get${entity.pkProperty.propertyName?cap_first}());
         </#list>
         </#if>
         <#if entity.toOneRelations?has_content>
         <#list entity.toOneRelations as toOne>
-        daoSession.insert(entity.get${toOne.name?cap_first}());
+
+        ${toOne.targetEntity.className} ${toOne.name} = entity.get${toOne.name?cap_first}();
+        daoSession.insert(${toOne.name});
+        entity.set${toOne.fkProperties[0].propertyName?cap_first}(${toOne.name}.get${entity.pkProperty.propertyName?cap_first}());
         </#list>
         </#if>
 

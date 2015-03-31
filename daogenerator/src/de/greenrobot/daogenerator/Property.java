@@ -17,8 +17,8 @@
  */
 package de.greenrobot.daogenerator;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /** Model class for an entity's property: a Java property mapped to a data base column. */
 public class Property {
@@ -126,6 +126,11 @@ public class Property {
             return this;
         }
 
+        public PropertyBuilder addImport(String importPackage) {
+            property.entity.addEntityImport(importPackage);
+            return this;
+        }
+
         public Property getProperty() {
             return property;
         }
@@ -157,6 +162,7 @@ public class Property {
     private int ordinal;
 
     private String javaType;
+
     private String javaTypeShort;
 
     public Property(Schema schema, Entity entity, PropertyType propertyType, String propertyName) {
